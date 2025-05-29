@@ -1,3 +1,3 @@
 # 플러터를 이용한 앱개발
-
-[노션 프로젝트 개발서](https://swamp-antimatter-30f.notion.site/LED-1e4f9f9829d480e78056d313298a312d?pvs=4)
+easyLED 쉬운LED 입니다.
+복잡하고 다양한 기능들로 기존의 앱을 사용하기 어려워하는 사용자를 위해 개발하였습니다.
