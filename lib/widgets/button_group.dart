@@ -11,6 +11,13 @@ class ButtonGroup extends StatelessWidget {
   final VoidCallback onAutoFontSize;
   final void Function(String) onMovementChange;
 
+  //초기화
+  final VoidCallback? onFontSizeReset;
+  final VoidCallback? onTextColorReset;
+  final VoidCallback? onBgColorReset;
+  final VoidCallback? onMovementReset;
+
+
   const ButtonGroup({
     Key? key,
     required this.onTextColorChanged,
@@ -18,18 +25,38 @@ class ButtonGroup extends StatelessWidget {
     required this.onFontSizeChange,
     required this.onAutoFontSize,
     required this.onMovementChange,
+    //초기화
+    this.onFontSizeReset,
+    this.onTextColorReset,
+    this.onBgColorReset,
+    this.onMovementReset,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(10,0,10,0),
+      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 1) 글자 크기
-          buildSectionTitle("글자크기"),
-          const SizedBox(height: 5),
+          // 1) 글자크기
+          Row(
+            children: [
+              buildSectionTitle("글자크기"), // 함수는 그대로 사용
+              const SizedBox(width: 8),
+              TextButton(
+                onPressed: onFontSizeReset,
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xFFFBFF00),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 4),
+                  minimumSize: Size(0, 0),
+                ),
+                child: const Text("초기화"),
+              ),
+            ],
+          ),
+          const SizedBox(height: 2),
           buildButtonRow(["작게", "크게", "자동"], (label) {
             if (label == "작게") {
               onFontSizeChange(false);
@@ -41,8 +68,23 @@ class ButtonGroup extends StatelessWidget {
           }),
 
           // 2) 글자색
-          buildSectionTitle("글자색"),
-          const SizedBox(height: 5),
+          Row(
+            children: [
+              buildSectionTitle("글자색"),
+              const SizedBox(width: 8),
+              TextButton(
+                onPressed: onTextColorReset,
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xFFFBFF00),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 4),
+                  minimumSize: Size(0, 0),
+                ),
+                child: const Text("초기화"),
+              ),
+            ],
+          ),
+          const SizedBox(height: 2),
           buildColorButtons(
             [
               Colors.red,
@@ -58,10 +100,25 @@ class ButtonGroup extends StatelessWidget {
             context,
           ),
 
-          const SizedBox(height: 5),
+          const SizedBox(height: 2),
 
           // 3) 배경색
-          buildSectionTitle("배경색"),
+          Row(
+            children: [
+              buildSectionTitle("배경색"),
+              const SizedBox(width: 8),
+              TextButton(
+                onPressed: onBgColorReset,
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xFFFBFF00),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 4),
+                  minimumSize: Size(0, 0),
+                ),
+                child: const Text("초기화"),
+              ),
+            ],
+          ),
           buildColorButtons(
             [
               Colors.red,
@@ -77,11 +134,26 @@ class ButtonGroup extends StatelessWidget {
             context,
           ),
 
-          const SizedBox(height: 5),
+          const SizedBox(height: 2),
 
           // 4) 움직임
-          buildSectionTitle("움직임"),
-          const SizedBox(height: 5),
+          Row(
+            children: [
+              buildSectionTitle("움직임"),
+              const SizedBox(width: 8),
+              TextButton(
+                onPressed: onMovementReset,
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xFFFBFF00),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 4),
+                  minimumSize: Size(0, 0),
+                ),
+                child: const Text("초기화"),
+              ),
+            ],
+          ),
+          const SizedBox(height: 2),
           buildButtonRow(["멈추기", "흐르기"], (label) {
             onMovementChange(label);
           }),

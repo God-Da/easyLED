@@ -195,4 +195,38 @@ class HomeController extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  // 전체 초기화 함수 추가
+  void resetAll() {
+    _textColor = Colors.white;
+    _bgColor = Colors.black;
+    _fontSize = FontSizeController.defaultFontSize;
+    _movement = "멈추기";
+    // 텍스트는 사용자가 입력한 값을 그대로 둠
+    // 필요하다면 _inputText, _displayText도 원래 값으로 세팅
+    notifyListeners();
+  }
+
+  // 만약 각 항목별로도 초기화 필요하면 아래처럼 분리해서 추가 가능
+  void resetFontSize() {
+    _fontSize = FontSizeController.defaultFontSize;
+    notifyListeners();
+  }
+
+  void resetTextColor() {
+    _textColor = Colors.white;
+    notifyListeners();
+  }
+
+  void resetBgColor() {
+    _bgColor = Colors.black;
+    notifyListeners();
+  }
+
+  void resetMovement() {
+    _movement = "멈추기";
+    notifyListeners();
+  }
 }
+
+
