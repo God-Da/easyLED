@@ -19,38 +19,43 @@ class PreviewBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final displayedText = text.isEmpty ? '여기에 텍스트를 입력하세요' : text;
+
     return Container(
       width: double.infinity,
       height: double.infinity,
       color: bgColor,
       alignment: Alignment.center,
       child: movement == "멈추기"
-          ? Text(
-        text.isEmpty ? '여기에 텍스트를 입력하세요' : text,
-        style: TextStyle(
-          fontFamily: 'Pretendard',
-          fontSize: fontSize,
-          color: textColor,
-          fontWeight: FontWeight.w900,
-        ),
-        textAlign: TextAlign.center,
-        softWrap: true,
-        overflow: TextOverflow.visible,
-      )
-          : SizedBox(
-        width: double.infinity,
-        height: double.infinity,
-        child: Marquee(
-          text: text.isEmpty ? '여기에 텍스트를 입력하세요' : text,
+          ? SingleChildScrollView(
+        child: Text(
+          displayedText,
           style: TextStyle(
             fontFamily: 'Pretendard',
             fontSize: fontSize,
+            height: 1.0,
+            color: textColor,
+            fontWeight: FontWeight.w900,
+          ),
+          textAlign: TextAlign.center,
+          softWrap: true,
+        ),
+      )
+          : SizedBox.expand(
+        child: Marquee(
+          text: displayedText,
+          style: TextStyle(
+            fontFamily: 'Pretendard',
+            fontSize: fontSize,
+            height: 1.0,
             color: textColor,
             fontWeight: FontWeight.w900,
           ),
           blankSpace: 100,
           velocity: 30.0,
           textDirection: TextDirection.ltr,
+          startPadding: 20.0,
+          pauseAfterRound: const Duration(seconds: 0),
         ),
       ),
     );
