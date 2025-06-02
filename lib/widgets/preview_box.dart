@@ -4,12 +4,14 @@ class PreviewBox extends StatelessWidget {
   final String text;
   final Color textColor;
   final Color bgColor;
+  final double fontSize;
 
   const PreviewBox({
     super.key,
     required this.text,
     this.textColor = Colors.white,
     this.bgColor = Colors.black,
+    required this.fontSize,
   });
 
   @override
@@ -20,7 +22,7 @@ class PreviewBox extends StatelessWidget {
       child: Text(
         text.isEmpty ? '여기에 텍스트를 입력하세요' : text,
         style: TextStyle(
-          fontSize: 25,
+          fontSize: fontSize,
           color: textColor,
           fontWeight: FontWeight.bold,
         ),

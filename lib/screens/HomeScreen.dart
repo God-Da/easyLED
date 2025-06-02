@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../widgets/button_group.dart';
 import '../widgets/preview_box.dart';
 import '../widgets/text_input_area.dart';
+import '../logic/setting_fontSize.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,6 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String inputText = ''; // 미리보기에 보여질 입력한 텍스트 상태 변수
   Color textColor = Colors.white; // 색상 선택 시 보여질 상태 변수
   Color bgColor = Colors.black;
+  double fontSize = FontSizeController.defaultFontSize;
 
   // TextInputArea에서 값을 받아 저장할 함수
   void handleTextChanged(String value) {
@@ -39,6 +41,13 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void handleFontSizeChange(bool increase) {
+    setState(() {
+      fontSize = FontSizeController.adjustFontSize(fontSize, increase);
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,6 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 text: inputText,
                 textColor: textColor,
                 bgColor: bgColor,
+                fontSize: fontSize,
               ),
             ),
           ),
@@ -107,6 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: ButtonGroup(
                 onTextColorChanged: handleTextColorChanged,
                 onBgColorChanged: handleBgColorChanged,
+                onFontSizeChange: handleFontSizeChange,
               ),
             ),
           ),
