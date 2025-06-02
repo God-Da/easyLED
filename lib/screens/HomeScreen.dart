@@ -47,6 +47,20 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void handleAutoFontSize(BoxConstraints constraints) {
+    final maxFont = FontSizeController.calculateMaxFontSize(
+      text: inputText.isEmpty ? '여기에 텍스트를 입력하세요' : inputText,
+      maxWidth: constraints.maxWidth,
+      maxHeight: constraints.maxHeight,
+      baseStyle: const TextStyle(fontWeight: FontWeight.bold),
+    );
+
+    setState(() {
+      fontSize = maxFont;
+    });
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -113,12 +127,15 @@ class _HomeScreenState extends State<HomeScreen> {
           //3.설정영역
           Expanded(
             flex: 5,
-            child: Center(
-              child: ButtonGroup(
-                onTextColorChanged: handleTextColorChanged,
-                onBgColorChanged: handleBgColorChanged,
-                onFontSizeChange: handleFontSizeChange,
-              ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return ButtonGroup(
+                  onTextColorChanged: handleTextColorChanged,
+                  onBgColorChanged: handleBgColorChanged,
+                  onFontSizeChange: handleFontSizeChange,
+                  onAutoFontSize: () => handleAutoFontSize(constraints),
+                );
+              },
             ),
           ),
         ],

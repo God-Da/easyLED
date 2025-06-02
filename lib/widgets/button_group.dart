@@ -6,6 +6,7 @@ class ButtonGroup extends StatelessWidget {
   final void Function(Color?) onTextColorChanged;
   final void Function(Color?) onBgColorChanged;
   final void Function(bool) onFontSizeChange;
+  final void Function() onAutoFontSize;
 
 
   const ButtonGroup({
@@ -13,6 +14,7 @@ class ButtonGroup extends StatelessWidget {
     required this.onTextColorChanged,
     required this.onBgColorChanged,
     required this.onFontSizeChange,
+    required this.onAutoFontSize,
   });
 
   @override
@@ -33,7 +35,7 @@ class ButtonGroup extends StatelessWidget {
             } else if (label == "크게") {
               onFontSizeChange(true); // 키우기
             } else if (label == "자동") {
-              // 여기에 자동정렬 넣기
+              onAutoFontSize();
             }
           }),
 
