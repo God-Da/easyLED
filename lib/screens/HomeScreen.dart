@@ -17,8 +17,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Color textColor = Colors.white; // 색상 선택 시 보여질 상태 변수
   Color bgColor = Colors.black;
   double fontSize = FontSizeController.defaultFontSize;
+  String movement = "멈추기";
 
-  // TextInputArea에서 값을 받아 저장할 함수
   void handleTextChanged(String value) {
     setState(() {
       inputText = value;
@@ -41,26 +41,102 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void handleFontSizeChange(bool increase) {
+  void handleFontSizeChange(bool increase, BoxConstraints constraints) {
     setState(() {
-      fontSize = FontSizeController.adjustFontSize(fontSize, increase);
+      fontSize = FontSizeController.adjustFontSize(
+        text: inputText,
+        currentSize: fontSize,
+        increase: increase,
+        maxWidth: constraints.maxWidth,
+        maxHeight: constraints.maxHeight,
+        baseStyle: const TextStyle(
+          fontFamily: 'Pretendard',
+          fontWeight: FontWeight.w900,
+        ),
+      );
     });
   }
 
   void handleAutoFontSize(BoxConstraints constraints) {
-    final maxFont = FontSizeController.calculateMaxFontSize(
-      text: inputText.isEmpty ? '여기에 텍스트를 입력하세요' : inputText,
-      maxWidth: constraints.maxWidth,
-      maxHeight: constraints.maxHeight,
-      baseStyle: const TextStyle(fontWeight: FontWeight.bold),
+    const styleBase = TextStyle(
+      fontFamily: 'Pretendard',
+      fontWeight: FontWeight.w900,
     );
 
+    if (movement == "흐르기") {
+      final size = FontSizeController.calculateMaxFontSizeSingleLine(
+        text: inputText.replaceAll('\n', ''),
+        maxWidth: constraints.maxWidth,
+        maxHeight: constraints.maxHeight,
+        baseStyle: styleBase,
+      );
+
+      setState(() {
+        inputText = inputText.replaceAll('\n', '');
+        fontSize = size;
+      });
+    } else {
+      final lineCount = _bestLineCount(inputText, constraints);
+      final lines = FontSizeController.splitTextToLines(inputText, lineCount);
+      final wrappedText = lines.join('\n');
+
+      final finalSize = FontSizeController.calculateAutoFontSizeWithWrap(
+        text: wrappedText,
+        maxWidth: constraints.maxWidth,
+        maxHeight: constraints.maxHeight,
+        baseStyle: styleBase,
+      );
+
+      setState(() {
+        inputText = wrappedText;
+        fontSize = finalSize;
+      });
+    }
+  }
+
+  void handleMovementChange(String label) {
     setState(() {
-      fontSize = maxFont;
+      movement = label;
     });
   }
 
+  int _bestLineCount(String text, BoxConstraints constraints) {
+    int bestLineCount = 1;
+    double bestFontSize = 10;
 
+    for (int lineCount = 1; lineCount <= text.length; lineCount++) {
+      final lines = FontSizeController.splitTextToLines(text, lineCount);
+      final joined = lines.join('\n');
+
+      final size = FontSizeController.calculateAutoFontSizeWithWrap(
+        text: joined,
+        maxWidth: constraints.maxWidth,
+        maxHeight: constraints.maxHeight,
+        baseStyle: const TextStyle(
+          fontFamily: 'Pretendard',
+          fontWeight: FontWeight.w900,
+        ),
+      );
+
+      final painter = TextPainter(
+        text: TextSpan(
+          text: joined,
+          style: TextStyle(fontSize: size, fontFamily: 'Pretendard', fontWeight: FontWeight.w900),
+        ),
+        textAlign: TextAlign.center,
+        textDirection: TextDirection.ltr,
+        textWidthBasis: TextWidthBasis.parent,
+      );
+      painter.layout(maxWidth: constraints.maxWidth);
+
+      if (painter.size.height <= constraints.maxHeight && size > bestFontSize) {
+        bestFontSize = size;
+        bestLineCount = lineCount;
+      }
+    }
+
+    return bestLineCount;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 textColor: textColor,
                 bgColor: bgColor,
                 fontSize: fontSize,
+                movement: movement,
               ),
             ),
           ),
@@ -89,32 +166,22 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Container(
                 child: Row(
                   children: [
-                    // 텍스트 입력창
                     Expanded(
                       child: TextInputArea(onTextChanged: handleTextChanged),
                     ),
-                    const SizedBox(width: 10), //요소 간 간격
+                    const SizedBox(width: 10),
                     ElevatedButton(
                       onPressed: () {
                         print("완성 버튼 클릭");
                       },
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 18,
-                        ),
-                        //버튼 배경
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
                         backgroundColor: Color(0xFFFBFF00),
-                        // 버튼 글자 색
                         foregroundColor: Colors.black,
-                        //버튼 곡률
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                         ),
-                        textStyle: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       child: const Text("완성"),
                     ),
@@ -132,8 +199,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 return ButtonGroup(
                   onTextColorChanged: handleTextColorChanged,
                   onBgColorChanged: handleBgColorChanged,
-                  onFontSizeChange: handleFontSizeChange,
+                  onFontSizeChange: (bool increase) {
+                    handleFontSizeChange(increase, constraints);
+                  },
                   onAutoFontSize: () => handleAutoFontSize(constraints),
+                  onMovementChange: handleMovementChange,
                 );
               },
             ),

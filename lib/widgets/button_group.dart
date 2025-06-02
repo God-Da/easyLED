@@ -7,7 +7,7 @@ class ButtonGroup extends StatelessWidget {
   final void Function(Color?) onBgColorChanged;
   final void Function(bool) onFontSizeChange;
   final void Function() onAutoFontSize;
-
+  final void Function(String) onMovementChange;
 
   const ButtonGroup({
     super.key,
@@ -15,6 +15,7 @@ class ButtonGroup extends StatelessWidget {
     required this.onBgColorChanged,
     required this.onFontSizeChange,
     required this.onAutoFontSize,
+    required this.onMovementChange,
   });
 
   @override
@@ -43,7 +44,16 @@ class ButtonGroup extends StatelessWidget {
           buildSectionTitle("글자색"),
           const SizedBox(height: 15),
           buildColorButtons(
-            [Colors.red, Color(0xFFFBFF00), Color(0xFF00FF37), Color(0xFF0022FF), Colors.purple, Colors.white, Colors.black, null],
+            [
+              Colors.red,
+              Color(0xFFFBFF00),
+              Color(0xFF00FF37),
+              Color(0xFF0022FF),
+              Colors.purple,
+              Colors.white,
+              Colors.black,
+              null,
+            ],
             onTextColorChanged,
             context,
           ),
@@ -54,7 +64,16 @@ class ButtonGroup extends StatelessWidget {
           buildSectionTitle("배경색"),
           const SizedBox(height: 15),
           buildColorButtons(
-            [Colors.red, Color(0xFFFBFF00), Color(0xFF00FF37), Color(0xFF0022FF), Colors.purple, Colors.white, Colors.black, null],
+            [
+              Colors.red,
+              Color(0xFFFBFF00),
+              Color(0xFF00FF37),
+              Color(0xFF0022FF),
+              Colors.purple,
+              Colors.white,
+              Colors.black,
+              null,
+            ],
             onBgColorChanged,
             context,
           ),
@@ -66,6 +85,7 @@ class ButtonGroup extends StatelessWidget {
           const SizedBox(height: 15),
           buildButtonRow(["멈추기", "흐르기"], (label) {
             print("움직임 선택: $label");
+            onMovementChange(label);
           }),
         ],
       ),
