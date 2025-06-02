@@ -1,4 +1,5 @@
 // lib/screens/HomeScreen.dart
+// HomeScreen 전체 레이아웃: 미리보기 + 입력/완성 + 설정 버튼 그룹
 
 import 'package:flutter/material.dart';
 
@@ -9,7 +10,7 @@ import '../widgets/home_preview.dart';
 import '../widgets/home_settings.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -22,10 +23,10 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _controller =
-        HomeController()..addListener(() {
-          // 컨트롤러의 상태가 바뀌면 setState()로 전체 HomeScreen rebuild
-          setState(() {});
-        });
+    HomeController()
+      ..addListener(() {
+        setState(() {}); // 상태가 바뀌면 화면 재빌드
+      });
   }
 
   @override
@@ -34,7 +35,22 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  // ResultView로 전달할 때에는 controller.displayText 등 사용
+  void handleCompleteButton() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (_) =>
+            ResultView(
+              text: _controller.displayText,
+              textColor: _controller.textColor,
+              bgColor: _controller.bgColor,
+              fontSize: _controller.fontSize,
+              movement: _controller.movement,
+            ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,57 +61,44 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             const SizedBox(height: 10),
 
-            // 1) Preview 영역
-            HomePreview(
-              text: _controller.displayText,
-              textColor: _controller.textColor,
-              bgColor: _controller.bgColor,
-              fontSize: _controller.fontSize,
-              movement: _controller.movement,
+            // 1) 미리보기: 16:9 고정 비율
+            AspectRatio(
+              aspectRatio: 16 / 9,
+              child: HomePreview(
+                text: _controller.displayText,
+                textColor: _controller.textColor,
+                bgColor: _controller.bgColor,
+                computedFontSize: _controller.fontSize,
+                movement: _controller.movement,
+              ),
             ),
 
             const SizedBox(height: 10),
 
-            // 2) 입력창 + 완성 버튼
-            HomeInput(
-              onTextChanged: _controller.setText,
-              onComplete: () {
-                // ResultView에 displayText, textColor, bgColor, fontSize, movement 전달
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => ResultView(
-                          text: _controller.displayText,
-                          textColor: _controller.textColor,
-                          bgColor: _controller.bgColor,
-                          fontSize: _controller.fontSize,
-                          movement: _controller.movement,
-                        ),
-                  ),
-                );
-              },
+            // 2) 입력창 + 완성버튼: 높이 제한
+            SizedBox(
+              height: 70,
+              child: HomeInput(
+                onTextChanged: _controller.setText,
+                onComplete: handleCompleteButton,
+              ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
 
-            // 3) 설정 버튼 그룹
-            LayoutBuilder(
-              builder: (context, constraints) {
-                return HomeSettings(
-                  onTextColorChanged: (Color? c) {
-                    if (c != null) _controller.setTextColor(c);
-                  },
-                  onBgColorChanged: (Color? c) {
-                    if (c != null) _controller.setBgColor(c);
-                  },
-                  onFontSizeChange:
-                      (bool inc) =>
-                          _controller.adjustFontSize(inc, constraints),
-                  onAutoFontSize: () => _controller.autoFontSize(constraints),
-                  onMovementChange: _controller.setMovement,
-                );
-              },
+            // 3) 설정 버튼 그룹: 남는 공간 차지
+            Expanded(
+              child: HomeSettings(
+                onTextColorChanged: (c) {
+                  if (c != null) _controller.setTextColor(c);
+                },
+                onBgColorChanged: (c) {
+                  if (c != null) _controller.setBgColor(c);
+                },
+                onFontSizeChange: _controller.adjustFontSize,
+                onAutoFontSize: _controller.autoFontSize,
+                onMovementChange: _controller.setMovement,
+              ),
             ),
           ],
         ),

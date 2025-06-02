@@ -1,31 +1,32 @@
+// lib/widgets/text_input_area.dart
+// “하단 입력창” 컴포넌트: 흰 배경의 라운드형 텍스트 필드
+
 import 'package:flutter/material.dart';
 
 class TextInputArea extends StatefulWidget {
   final void Function(String) onTextChanged;
 
-  const TextInputArea({super.key, required this.onTextChanged});
+  const TextInputArea({Key? key, required this.onTextChanged}) : super(key: key);
 
   @override
   State<TextInputArea> createState() => _TextInputAreaState();
 }
 
 class _TextInputAreaState extends State<TextInputArea> {
-  final myController = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    myController.addListener(_printLatestValue);
+    _controller.addListener(() {
+      widget.onTextChanged(_controller.text);
+    });
   }
 
   @override
   void dispose() {
-    myController.dispose();
+    _controller.dispose();
     super.dispose();
-  }
-
-  void _printLatestValue() {
-    print("text field: ${myController.text}");
   }
 
   @override
@@ -33,8 +34,7 @@ class _TextInputAreaState extends State<TextInputArea> {
     return Padding(
       padding: const EdgeInsets.all(5),
       child: TextField(
-        controller: myController,
-        onChanged: widget.onTextChanged,
+        controller: _controller,
         style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
           hintText: '텍스트를 입력하세요',

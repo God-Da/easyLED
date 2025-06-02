@@ -1,19 +1,19 @@
 // lib/logic/home_controller.dart
+// “최종뷰(16:9) 기준 폰트 크기 계산 + 상태 관리”를 담당하는 ChangeNotifier 컨트롤러
 
 import 'package:flutter/material.dart';
 import 'setting_fontSize.dart';
 
-/// HomeScreen의 상태(state)와 로직(handler)을 전부 관리하는 컨트롤러
 class HomeController extends ChangeNotifier {
-  // 1) 원본 텍스트, 화면용 텍스트, 색상, 폰트 크기, 움직임 모드 상태
-  String _inputText   = '';
-  String _displayText = '';
+  // 1) 상태 변수
+  String _inputText   = '';  // 사용자가 입력한 원본 문자열
+  String _displayText = '';  // 화면(미리보기/최종뷰)에 실제로 그려줄 문자열 (줄바꿈 포함)
   Color  _textColor   = Colors.white;
   Color  _bgColor     = Colors.black;
   double _fontSize    = FontSizeController.defaultFontSize;
-  String _movement    = "멈추기";
+  String _movement    = "멈추기"; // 기본값: 멈추기
 
-  // ▶ 외부에서 읽을 수 있도록 getter만 공개
+  // ▼ 외부에서 읽어갈 수 있도록 getter 제공
   String get inputText   => _inputText;
   String get displayText => _displayText;
   Color  get textColor   => _textColor;
@@ -40,87 +40,78 @@ class HomeController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// 4) 작게/크게 버튼 누를 때 폰트 크기 조정
-  void adjustFontSize(bool increase, BoxConstraints constraints) {
-    const baseStyle = TextStyle(
+  /// 4) “작게/크게” 버튼: 최종뷰 크기(예: 1600×900) 기준으로 줄바꿈 + 폰트 크기 재계산
+  void adjustFontSize(bool increase) {
+    const styleBase = TextStyle(
       fontFamily: 'Pretendard',
       fontWeight: FontWeight.w900,
     );
 
-    if (_movement == "멈추기") {
-      // (1) 원본 _inputText 기준으로 최적 줄 개수 계산
-      final linesCount = FontSizeController.estimateOptimalLineCount(_inputText);
+    // ── (예시) 최종뷰의 가로×세로 픽셀 단위. 실제 기기에 맞추려면 별도 상수 혹은 매개변수로 치환하세요. ──
+    final double finalWidth  = 1600;
+    final double finalHeight = 900;
 
-      // (2) 단어 단위로 분할해서 linesCount 만큼 줄바꿈 생성
-      final lines = FontSizeController.splitTextByWords(_inputText, linesCount);
-      final wrappedText = lines.join('\n');
-
-      // (3) 기존 _fontSize에서 증감한 testSize 계산
-      double testSize = increase ? _fontSize + 3 : _fontSize - 3;
-      if (testSize < FontSizeController.minFontSize) {
-        testSize = FontSizeController.minFontSize;
-      }
-      if (testSize > FontSizeController.maxFontSize) {
-        testSize = FontSizeController.maxFontSize;
-      }
-
-      // (4) wrappedText + testSize로 실제로 표시했을 때 영역 내에 들어가는지 확인
-      final painter = TextPainter(
-        text: TextSpan(text: wrappedText, style: baseStyle.copyWith(fontSize: testSize)),
-        textAlign: TextAlign.center,
-        textDirection: TextDirection.ltr,
-        textWidthBasis: TextWidthBasis.parent,
-      );
-      painter.layout(maxWidth: constraints.maxWidth);
-
-      if (painter.size.height <= constraints.maxHeight) {
-        // (5) 영역을 넘지 않으면 실제 상태에 반영
-        _displayText = wrappedText;
-        _fontSize    = testSize;
-        notifyListeners();
-      }
-      // 만약 영역을 넘으면 아무것도 하지 않아서 기존 상태 유지
-
-    } else {
-      // “흐르기” 모드: 줄바꿈 없이 단일 행만 고려
+    if (_movement == "흐르기") {
+      // “흐르기” 모드: 줄바꿈 없이 한 줄만 고려
       final singleLine = _inputText.replaceAll('\n', '');
+
       double testSize = increase ? _fontSize + 3 : _fontSize - 3;
-      if (testSize < FontSizeController.minFontSize) {
-        testSize = FontSizeController.minFontSize;
-      }
-      if (testSize > FontSizeController.maxFontSize) {
-        testSize = FontSizeController.maxFontSize;
-      }
+      if (testSize < FontSizeController.minFontSize) testSize = FontSizeController.minFontSize;
+      if (testSize > FontSizeController.maxFontSize) testSize = FontSizeController.maxFontSize;
 
       final painter = TextPainter(
-        text: TextSpan(text: singleLine, style: baseStyle.copyWith(fontSize: testSize)),
+        text: TextSpan(text: singleLine, style: styleBase.copyWith(fontSize: testSize)),
         textAlign: TextAlign.left,
         textDirection: TextDirection.ltr,
         textWidthBasis: TextWidthBasis.parent,
-      );
-      painter.layout(maxWidth: constraints.maxWidth);
+      )..layout(maxWidth: finalWidth);
 
-      if (painter.size.height <= constraints.maxHeight) {
+      if (painter.size.height <= finalHeight) {
         _displayText = singleLine;
+        _fontSize    = testSize;
+        notifyListeners();
+      }
+    } else {
+      // “멈추기” 모드: 최적 줄 개수 계산 → 단어 단위로 분할 → 줄바꿈된 문자열(wrapped) 생성
+      final linesCount = FontSizeController.estimateOptimalLineCount(_inputText);
+      final lines      = FontSizeController.splitTextByWords(_inputText, linesCount);
+      final wrapped    = lines.join('\n');
+
+      double testSize = increase ? _fontSize + 3 : _fontSize - 3;
+      if (testSize < FontSizeController.minFontSize) testSize = FontSizeController.minFontSize;
+      if (testSize > FontSizeController.maxFontSize) testSize = FontSizeController.maxFontSize;
+
+      final painter = TextPainter(
+        text: TextSpan(text: wrapped, style: styleBase.copyWith(fontSize: testSize)),
+        textAlign: TextAlign.center,
+        textDirection: TextDirection.ltr,
+        textWidthBasis: TextWidthBasis.parent,
+      )..layout(maxWidth: finalWidth);
+
+      if (painter.size.height <= finalHeight) {
+        _displayText = wrapped;
         _fontSize    = testSize;
         notifyListeners();
       }
     }
   }
 
-  /// 5) 자동 버튼 누를 때 폰트 + 줄바꿈 계산
-  void autoFontSize(BoxConstraints constraints) {
+  /// 5) “자동” 버튼: 최종뷰 크기(예: 1600×900)에서 최대 폰트 크기 한 번에 계산
+  void autoFontSize() {
     const styleBase = TextStyle(
       fontFamily: 'Pretendard',
       fontWeight: FontWeight.w900,
     );
 
+    final double finalWidth  = 1600;
+    final double finalHeight = 900;
+
     if (_movement == "흐르기") {
       final singleLine = _inputText.replaceAll('\n', '');
       final size = FontSizeController.calculateMaxFontSizeSingleLine(
         text: singleLine,
-        maxWidth: constraints.maxWidth,
-        maxHeight: constraints.maxHeight,
+        maxWidth: finalWidth,
+        maxHeight: finalHeight,
         baseStyle: styleBase,
       );
       _displayText = singleLine;
@@ -130,24 +121,23 @@ class HomeController extends ChangeNotifier {
       final lines      = FontSizeController.splitTextByWords(_inputText, linesCount);
       final wrapped    = lines.join('\n');
 
-      final adjustedSize = FontSizeController.calculateAutoFontSizeWithWrap(
+      final size = FontSizeController.calculateAutoFontSizeWithWrap(
         text: wrapped,
-        maxWidth: constraints.maxWidth,
-        maxHeight: constraints.maxHeight,
+        maxWidth: finalWidth,
+        maxHeight: finalHeight,
         baseStyle: styleBase,
       );
       _displayText = wrapped;
-      _fontSize    = adjustedSize;
+      _fontSize    = size;
     }
 
     notifyListeners();
   }
 
-  /// 6) 움직임(멈추기/흐르기) 변경
+  /// 6) “멈추기/흐르기” 상태 토글 → displayText 재설정
   void setMovement(String label) {
     _movement = label;
     if (_movement == "흐르기") {
-      // 줄바꿈 제거
       _displayText = _inputText.replaceAll('\n', '');
     } else {
       _displayText = _inputText;

@@ -1,4 +1,6 @@
-// 설정 섹션: 글자 크기, 색상, 배경색, 움직임 모드를 선택하는 버튼 그룹
+// lib/widgets/home_settings.dart
+// “HomeScreen 설정 섹션 전체”를 래핑한 StatelessWidget
+// ButtonGroup의 props만 연결해 주는 래퍼 역할
 
 import 'package:flutter/material.dart';
 import 'button_group.dart';
@@ -11,13 +13,13 @@ class HomeSettings extends StatelessWidget {
   final void Function(String) onMovementChange;
 
   const HomeSettings({
-    super.key,
+    Key? key,
     required this.onTextColorChanged,
     required this.onBgColorChanged,
     required this.onFontSizeChange,
     required this.onAutoFontSize,
     required this.onMovementChange,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

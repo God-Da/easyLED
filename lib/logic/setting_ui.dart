@@ -1,98 +1,79 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+// lib/logic/setting_ui.dart
+// “설정 화면(버튼 그룹)에서 쓰이는 공통 UI 빌더 함수 모음”
 
-//구역 제목 만들기
+import 'package:flutter/material.dart';
+import '../widgets/color_picker_dialog.dart';
+
+/// 구역 제목(“글자 크기”, “글자색” 등)을 출력하는 위젯
 Widget buildSectionTitle(String title) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 8),
     child: Text(
       title,
       style: const TextStyle(
-        color: Colors.white, //색상
+        color: Colors.white,
         fontSize: 25,
-        fontWeight: FontWeight.bold, // 폰트 굵기?
+        fontWeight: FontWeight.bold,
       ),
     ),
   );
 }
 
-//버튼 가로 정렬
+/// 라벨 리스트 → 가로로 버튼을 늘어놓는 Row 위젯
 Widget buildButtonRow(List<String> labels, void Function(String) onPressed) {
   return Row(
-    children:
-        labels
-            .map(
-              (label) => Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: ElevatedButton(
-                    onPressed: () => onPressed(label),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: Text(label, textAlign: TextAlign.center),
-                  ),
-                ),
+    children: labels.map((label) {
+      return Expanded(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: ElevatedButton(
+            onPressed: () => onPressed(label),
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
-            )
-            .toList(),
+            ),
+            child: Text(label, textAlign: TextAlign.center),
+          ),
+        ),
+      );
+    }).toList(),
   );
 }
 
-//색상 선택 버튼
-Widget buildColorButtons(List<Color?> colors, void Function(Color?) onTap, BuildContext context) {
+/// 색상 버튼을 가로로 만들어주는 헬퍼
+Widget buildColorButtons(
+    List<Color?> colors,
+    void Function(Color?) onTap,
+    BuildContext context,
+    ) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: colors.map((color) {
       return GestureDetector(
-        onTap: () async{
-          if(color != null){
-            onTap(color); //기본 색상 버튼 처리
-          } else{ //무지개 버튼 눌렀을 때 null값일때
-            Color pickedColor = Colors.red;
-
-            await showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text('색상을 선택하세요'),
-                content: SingleChildScrollView(
-                  child: ColorPicker(
-                    pickerColor: pickedColor,
-                    onColorChanged: (Color c) {
-                      pickedColor = c;
-                    },
-                    enableAlpha: false,
-                    showLabel: true,
-                    pickerAreaHeightPercent: 0.8,
-                  ),
-                ),
-                actions: <Widget>[
-                  TextButton(
-                    child: const Text('확인'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      onTap(pickedColor); // 선택된 색 전달
-                    },
-                  ),
-                ],
-              );
-            },
+        onTap: () async {
+          if (color != null) {
+            onTap(color);
+          } else {
+            // “무지개” 버튼 클릭 → 다이얼로그 띄우기
+            final pickedColor = await showColorPickerDialog(
+              context,
+              Colors.red, // 초기값(예시)
             );
+            if (pickedColor != null) {
+              onTap(pickedColor);
+            }
           }
         },
-
         child: Container(
           width: 36,
           height: 36,
           decoration: BoxDecoration(
-            color: color == null ? null : color,
+            color: color,
             border: Border.all(color: Colors.white),
             borderRadius: BorderRadius.circular(8),
             gradient: color == null
@@ -100,9 +81,9 @@ Widget buildColorButtons(List<Color?> colors, void Function(Color?) onTap, Build
               colors: [
                 Colors.red,
                 Colors.orange,
-                Colors.yellow,
-                Colors.green,
-                Colors.blue,
+                const Color(0xFFFBFF00),
+                const Color(0xFF00FF37),
+                const Color(0xFF0022FF),
                 Colors.indigo,
                 Colors.purple,
                 Colors.red,
@@ -116,4 +97,3 @@ Widget buildColorButtons(List<Color?> colors, void Function(Color?) onTap, Build
     }).toList(),
   );
 }
-
