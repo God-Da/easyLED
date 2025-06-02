@@ -7,29 +7,29 @@ import '../widgets/color_picker_dialog.dart';
 /// 구역 제목(“글자 크기”, “글자색” 등)을 출력하는 위젯
 Widget buildSectionTitle(String title) {
   return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 8),
+    padding: const EdgeInsets.symmetric(vertical: 5),
     child: Text(
       title,
       style: const TextStyle(
         color: Colors.white,
-        fontSize: 25,
+        fontSize: 20,
         fontWeight: FontWeight.bold,
       ),
     ),
   );
 }
 
-/// 라벨 리스트 → 가로로 버튼을 늘어놓는 Row 위젯
+/// 라벨 리스트 → 가로로 버튼을 늘어놓는 Row 위젯  여기서 조정하기
 Widget buildButtonRow(List<String> labels, void Function(String) onPressed) {
   return Row(
     children: labels.map((label) {
       return Expanded(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: ElevatedButton(
             onPressed: () => onPressed(label),
             style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 20),
+              padding: const EdgeInsets.symmetric(vertical: 10),
               textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               backgroundColor: Colors.white,
               foregroundColor: Colors.black,

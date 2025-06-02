@@ -73,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height:5,),
 
             // 2) 입력창 + 완성버튼: 높이 제한
             SizedBox(
@@ -83,8 +83,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 onComplete: handleCompleteButton,
               ),
             ),
-
-            const SizedBox(height: 10),
 
             // 3) 설정 버튼 그룹: 남는 공간 차지
             Expanded(

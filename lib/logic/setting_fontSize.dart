@@ -4,7 +4,7 @@
 import 'package:flutter/material.dart';
 
 class FontSizeController {
-  static const double defaultFontSize = 50.0;
+  static const double defaultFontSize = 150.0;
   static const double minFontSize     = 10.0;
   static const double maxFontSize     = 300.0;
 

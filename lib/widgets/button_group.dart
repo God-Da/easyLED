@@ -23,13 +23,13 @@ class ButtonGroup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(10,0,10,0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // 1) 글자 크기
           buildSectionTitle("글자크기"),
-          const SizedBox(height: 10),
+          const SizedBox(height: 5),
           buildButtonRow(["작게", "크게", "자동"], (label) {
             if (label == "작게") {
               onFontSizeChange(false);
@@ -42,7 +42,7 @@ class ButtonGroup extends StatelessWidget {
 
           // 2) 글자색
           buildSectionTitle("글자색"),
-          const SizedBox(height: 10),
+          const SizedBox(height: 5),
           buildColorButtons(
             [
               Colors.red,
@@ -58,11 +58,10 @@ class ButtonGroup extends StatelessWidget {
             context,
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 5),
 
           // 3) 배경색
           buildSectionTitle("배경색"),
-          const SizedBox(height: 10),
           buildColorButtons(
             [
               Colors.red,
@@ -78,11 +77,11 @@ class ButtonGroup extends StatelessWidget {
             context,
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 5),
 
           // 4) 움직임
           buildSectionTitle("움직임"),
-          const SizedBox(height: 10),
+          const SizedBox(height: 5),
           buildButtonRow(["멈추기", "흐르기"], (label) {
             onMovementChange(label);
           }),

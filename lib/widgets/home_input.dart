@@ -29,8 +29,11 @@ class HomeInput extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFFBFF00),
               foregroundColor: Colors.black,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-              textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8)
+              ),
             ),
             child: const Text("완성"),
           ),
