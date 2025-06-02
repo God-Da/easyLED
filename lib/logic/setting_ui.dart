@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 //구역 제목 만들기
 Widget buildSectionTitle(String title) {
@@ -45,12 +46,48 @@ Widget buildButtonRow(List<String> labels, void Function(String) onPressed) {
 }
 
 //색상 선택 버튼
-Widget buildColorButtons(List<Color?> colors, void Function(Color?) onTap) {
+Widget buildColorButtons(List<Color?> colors, void Function(Color?) onTap, BuildContext context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: colors.map((color) {
       return GestureDetector(
-        onTap: () => onTap(color),
+        onTap: () async{
+          if(color != null){
+            onTap(color); //기본 색상 버튼 처리
+          } else{ //무지개 버튼 눌렀을 때 null값일때
+            Color pickedColor = Colors.red;
+
+            await showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('색상을 선택하세요'),
+                content: SingleChildScrollView(
+                  child: ColorPicker(
+                    pickerColor: pickedColor,
+                    onColorChanged: (Color c) {
+                      pickedColor = c;
+                    },
+                    enableAlpha: false,
+                    showLabel: true,
+                    pickerAreaHeightPercent: 0.8,
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text('확인'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      onTap(pickedColor); // 선택된 색 전달
+                    },
+                  ),
+                ],
+              );
+            },
+            );
+          }
+        },
+
         child: Container(
           width: 36,
           height: 36,

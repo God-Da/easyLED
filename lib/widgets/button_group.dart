@@ -36,7 +36,7 @@ class ButtonGroup extends StatelessWidget {
             ],
                 (color) {
               print("글자색 선택: $color");
-            },
+            }, context,
           ),
 
           const SizedBox(height: 20),
@@ -58,7 +58,7 @@ class ButtonGroup extends StatelessWidget {
             ],
                 (color) {
               print("배경색 선택: $color");
-            },
+            }, context,
           ),
 
           const SizedBox(height: 20),
