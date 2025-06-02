@@ -13,12 +13,30 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String inputText = ''; // 미리보기에 보여질 입력한 텍스트 상태 변수
+  Color textColor = Colors.white; // 색상 선택 시 보여질 상태 변수
+  Color bgColor = Colors.black;
 
   // TextInputArea에서 값을 받아 저장할 함수
   void handleTextChanged(String value) {
     setState(() {
       inputText = value;
     });
+  }
+
+  void handleTextColorChanged(Color? color) {
+    if (color != null) {
+      setState(() {
+        textColor = color;
+      });
+    }
+  }
+
+  void handleBgColorChanged(Color? color) {
+    if (color != null) {
+      setState(() {
+        bgColor = color;
+      });
+    }
   }
 
   @override
@@ -31,7 +49,11 @@ class _HomeScreenState extends State<HomeScreen> {
           Expanded(
             flex: 3,
             child: Container(
-              child: PreviewBox(text: inputText),
+              child: PreviewBox(
+                text: inputText,
+                textColor: textColor,
+                bgColor: bgColor,
+              ),
             ),
           ),
 
@@ -47,9 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Expanded(
                       child: TextInputArea(onTextChanged: handleTextChanged),
                     ),
-
-                    const SizedBox(width: 10), //간격
-
+                    const SizedBox(width: 10), //요소 간 간격
                     ElevatedButton(
                       onPressed: () {
                         print("완성 버튼 클릭");
@@ -59,14 +79,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           horizontal: 20,
                           vertical: 18,
                         ),
+                        //버튼 배경
                         backgroundColor: Color(0xFFFBFF00),
-                        //버튼 색
+                        // 버튼 글자 색
                         foregroundColor: Colors.black,
-                        //버튼 글자색
+                        //버튼 곡률
                         shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(5),
-                          ), //버튼 둥글게
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
                         ),
                         textStyle: const TextStyle(
                           fontSize: 20,
@@ -82,7 +101,15 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
           //3.설정영역
-          Expanded(flex: 5, child: Center(child: ButtonGroup())),
+          Expanded(
+            flex: 5,
+            child: Center(
+              child: ButtonGroup(
+                onTextColorChanged: handleTextColorChanged,
+                onBgColorChanged: handleBgColorChanged,
+              ),
+            ),
+          ),
         ],
       ),
     );
