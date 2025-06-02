@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
+import '../logic/marquee_config.dart';
 
 class ResultView extends StatelessWidget {
   final String text;
@@ -44,8 +45,8 @@ class ResultView extends StatelessWidget {
                       color: textColor,
                       height: 1.0,
                     ),
-                    blankSpace: 100,
-                    velocity: 30.0,
+                    blankSpace: kMarqueeBlankSpace,
+                    velocity: kMarqueeVelocity,
                     textDirection: TextDirection.ltr,
                   )
                       : FittedBox(
