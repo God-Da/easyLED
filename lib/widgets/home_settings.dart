@@ -12,12 +12,6 @@ class HomeSettings extends StatelessWidget {
   final VoidCallback onAutoFontSize;
   final void Function(String) onMovementChange;
 
-  // ▼▼▼ 추가: 초기화 콜백 4개
-  final VoidCallback? onFontSizeReset;
-  final VoidCallback? onTextColorReset;
-  final VoidCallback? onBgColorReset;
-  final VoidCallback? onMovementReset;
-
   const HomeSettings({
     Key? key,
     required this.onTextColorChanged,
@@ -25,10 +19,6 @@ class HomeSettings extends StatelessWidget {
     required this.onFontSizeChange,
     required this.onAutoFontSize,
     required this.onMovementChange,
-    this.onFontSizeReset,
-    this.onTextColorReset,
-    this.onBgColorReset,
-    this.onMovementReset,
   }) : super(key: key);
 
   @override
@@ -39,11 +29,6 @@ class HomeSettings extends StatelessWidget {
       onFontSizeChange: onFontSizeChange,
       onAutoFontSize: onAutoFontSize,
       onMovementChange: onMovementChange,
-      // ▼▼▼ 추가된 부분!
-      onFontSizeReset: onFontSizeReset,
-      onTextColorReset: onTextColorReset,
-      onBgColorReset: onBgColorReset,
-      onMovementReset: onMovementReset,
     );
   }
 }
