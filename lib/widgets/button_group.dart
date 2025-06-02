@@ -27,7 +27,7 @@ class ButtonGroup extends StatelessWidget {
         children: [
           // 1. 글자 크기
           buildSectionTitle("글자크기"),
-          const SizedBox(height: 15),
+          const SizedBox(height: 10),
           buildButtonRow(["작게", "크게", "자동"], (label) {
             print("글자크기 선택: $label");
 
@@ -42,7 +42,7 @@ class ButtonGroup extends StatelessWidget {
 
           // 2. 글자 색
           buildSectionTitle("글자색"),
-          const SizedBox(height: 15),
+          const SizedBox(height: 10),
           buildColorButtons(
             [
               Colors.red,
@@ -62,7 +62,7 @@ class ButtonGroup extends StatelessWidget {
 
           // 3. 배경 색
           buildSectionTitle("배경색"),
-          const SizedBox(height: 15),
+          const SizedBox(height: 10),
           buildColorButtons(
             [
               Colors.red,
@@ -82,7 +82,7 @@ class ButtonGroup extends StatelessWidget {
 
           // 4. 움직임
           buildSectionTitle("움직임"),
-          const SizedBox(height: 15),
+          const SizedBox(height: 10),
           buildButtonRow(["멈추기", "흐르기"], (label) {
             print("움직임 선택: $label");
             onMovementChange(label);

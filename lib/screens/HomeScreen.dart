@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+
+import '../logic/setting_fontSize.dart';
+import '../screens/result_view.dart';
 import '../widgets/button_group.dart';
 import '../widgets/preview_box.dart';
 import '../widgets/text_input_area.dart';
-import '../logic/setting_fontSize.dart';
-import '../screens/result_view.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -75,8 +76,13 @@ class _HomeScreenState extends State<HomeScreen> {
         fontSize = size;
       });
     } else {
-      final bestLineCount = FontSizeController.estimateOptimalLineCount(inputText);
-      final lines = FontSizeController.splitTextByWords(inputText, bestLineCount);
+      final bestLineCount = FontSizeController.estimateOptimalLineCount(
+        inputText,
+      );
+      final lines = FontSizeController.splitTextByWords(
+        inputText,
+        bestLineCount,
+      );
       final wrappedText = lines.join('\n');
       final adjustedSize = FontSizeController.calculateAutoFontSizeWithWrap(
         text: wrappedText,
@@ -97,77 +103,104 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Column(
-        children: [
-          Expanded(
-            flex: 3,
-            child: PreviewBox(
+  void handleCompleteButton() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => ResultView(
               text: inputText,
               textColor: textColor,
               bgColor: bgColor,
               fontSize: fontSize,
               movement: movement,
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10, 0, 20, 0),
-            child: SizedBox(
-              height: 80,
-              child: Row(
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            // 1. 미리보기 (16:9 고정)
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey, width: 1), // 흰색 테두리
+              ),
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: PreviewBox(
+                  text: inputText,
+                  textColor: textColor,
+                  bgColor: bgColor,
+                  fontSize: fontSize,
+                  movement: movement,
+                ),
+              ),
+            ),
+
+            // 2. Spacer: 중간 빈 공간 확보
+            //const Spacer(),
+            const SizedBox(height: 30),
+
+            // 3. 하단 입력창 + 버튼 + 설정 그룹 묶기
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+              child: Column(
+                mainAxisSize: MainAxisSize.min, // 내용만큼만 차지
                 children: [
-                  Expanded(
-                    child: TextInputArea(onTextChanged: handleTextChanged),
-                  ),
-                  const SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ResultView(
-                            text: inputText,
-                            textColor: textColor,
-                            bgColor: bgColor,
-                            fontSize: fontSize,
-                            movement: movement,
+                  // 입력창 + 버튼
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextInputArea(onTextChanged: handleTextChanged),
+                      ),
+                      const SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: handleCompleteButton,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFBFF00),
+                          foregroundColor: Colors.black,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 18,
+                          ),
+                          textStyle: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
+                        child: const Text("완성"),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // 설정 버튼 그룹
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      return ButtonGroup(
+                        onTextColorChanged: handleTextColorChanged,
+                        onBgColorChanged: handleBgColorChanged,
+                        onFontSizeChange:
+                            (bool inc) =>
+                                handleFontSizeChange(inc, constraints),
+                        onAutoFontSize: () => handleAutoFontSize(constraints),
+                        onMovementChange: handleMovementChange,
                       );
                     },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-                      backgroundColor: const Color(0xFFFBFF00),
-                      foregroundColor: Colors.black,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                      ),
-                      textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    child: const Text("완성"),
                   ),
                 ],
               ),
             ),
-          ),
-          Expanded(
-            flex: 5,
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return ButtonGroup(
-                  onTextColorChanged: handleTextColorChanged,
-                  onBgColorChanged: handleBgColorChanged,
-                  onFontSizeChange: (bool inc) => handleFontSizeChange(inc, constraints),
-                  onAutoFontSize: () => handleAutoFontSize(constraints),
-                  onMovementChange: handleMovementChange,
-                );
-              },
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

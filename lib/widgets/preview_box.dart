@@ -11,51 +11,48 @@ class PreviewBox extends StatelessWidget {
   const PreviewBox({
     super.key,
     required this.text,
-    this.textColor = Colors.white,
-    this.bgColor = Colors.black,
+    required this.textColor,
+    required this.bgColor,
     required this.fontSize,
     required this.movement,
   });
 
   @override
   Widget build(BuildContext context) {
-    final displayedText = text.isEmpty ? '여기에 텍스트를 입력하세요' : text;
+    final displayText = text.isEmpty ? '텍스트를 입력하세요' : text;
 
     return Container(
       width: double.infinity,
       height: double.infinity,
       color: bgColor,
-      alignment: Alignment.center,
-      child: movement == "멈추기"
-          ? SingleChildScrollView(
-        child: Text(
-          displayedText,
-          style: TextStyle(
-            fontFamily: 'Pretendard',
-            fontSize: fontSize,
-            height: 1.0,
-            color: textColor,
-            fontWeight: FontWeight.w900,
-          ),
-          textAlign: TextAlign.center,
-          softWrap: true,
+      child: movement == "흐르기"
+          ? Marquee(
+        text: displayText,
+        style: TextStyle(
+          fontFamily: 'Pretendard',
+          fontSize: fontSize,
+          fontWeight: FontWeight.w900,
+          color: textColor,
+          height: 1.0,
         ),
+        blankSpace: 100,
+        velocity: 30.0,
+        textDirection: TextDirection.ltr,
       )
-          : SizedBox.expand(
-        child: Marquee(
-          text: displayedText,
-          style: TextStyle(
-            fontFamily: 'Pretendard',
-            fontSize: fontSize,
-            height: 1.0,
-            color: textColor,
-            fontWeight: FontWeight.w900,
+          : Center(
+        child: FittedBox(
+          fit: BoxFit.contain,
+          child: Text(
+            displayText,
+            style: TextStyle(
+              fontFamily: 'Pretendard',
+              fontSize: fontSize,
+              fontWeight: FontWeight.w900,
+              color: textColor,
+              height: 1.0,
+            ),
+            textAlign: TextAlign.center,
           ),
-          blankSpace: 100,
-          velocity: 30.0,
-          textDirection: TextDirection.ltr,
-          startPadding: 20.0,
-          pauseAfterRound: const Duration(seconds: 0),
         ),
       ),
     );
