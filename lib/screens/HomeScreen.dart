@@ -23,10 +23,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _controller =
-    HomeController()
-      ..addListener(() {
-        setState(() {}); // 상태가 바뀌면 화면 재빌드
-      });
+        HomeController()..addListener(() {
+          setState(() {}); // 상태가 바뀌면 화면 재빌드
+        });
   }
 
   @override
@@ -40,8 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
       context,
       MaterialPageRoute(
         builder:
-            (_) =>
-            ResultView(
+            (_) => ResultView(
               text: _controller.displayText,
               textColor: _controller.textColor,
               bgColor: _controller.bgColor,
@@ -73,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            const SizedBox(height:5,),
+            const SizedBox(height: 5),
 
             // 2) 입력창 + 완성버튼: 높이 제한
             SizedBox(
@@ -96,6 +94,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 onFontSizeChange: _controller.adjustFontSize,
                 onAutoFontSize: _controller.autoFontSize,
                 onMovementChange: _controller.setMovement,
+                onResetFontSize: _controller.resetFontSize,
+                onResetTextColor: _controller.resetTextColor,
+                onResetBgColor: _controller.resetBgColor,
+                onResetMovement: _controller.resetMovement,
               ),
             ),
           ],

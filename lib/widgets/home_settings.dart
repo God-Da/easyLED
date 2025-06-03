@@ -12,6 +12,11 @@ class HomeSettings extends StatelessWidget {
   final VoidCallback onAutoFontSize;
   final void Function(String) onMovementChange;
 
+  final VoidCallback onResetFontSize;
+  final VoidCallback onResetTextColor;
+  final VoidCallback onResetBgColor;
+  final VoidCallback onResetMovement;
+
   const HomeSettings({
     Key? key,
     required this.onTextColorChanged,
@@ -19,6 +24,10 @@ class HomeSettings extends StatelessWidget {
     required this.onFontSizeChange,
     required this.onAutoFontSize,
     required this.onMovementChange,
+    required this.onResetFontSize,
+    required this.onResetTextColor,
+    required this.onResetBgColor,
+    required this.onResetMovement,
   }) : super(key: key);
 
   @override
@@ -29,6 +38,10 @@ class HomeSettings extends StatelessWidget {
       onFontSizeChange: onFontSizeChange,
       onAutoFontSize: onAutoFontSize,
       onMovementChange: onMovementChange,
+      onResetFontSize: onResetFontSize,
+      onResetTextColor: onResetTextColor,
+      onResetBgColor: onResetBgColor,
+      onResetMovement: onResetMovement,
     );
   }
 }
