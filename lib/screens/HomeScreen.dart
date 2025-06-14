@@ -53,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.black,
       body: SafeArea(
         child: Column(
@@ -84,20 +85,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
             // 3) 설정 버튼 그룹: 남는 공간 차지
             Expanded(
-              child: HomeSettings(
-                onTextColorChanged: (c) {
-                  if (c != null) _controller.setTextColor(c);
-                },
-                onBgColorChanged: (c) {
-                  if (c != null) _controller.setBgColor(c);
-                },
-                onFontSizeChange: _controller.adjustFontSize,
-                onAutoFontSize: _controller.autoFontSize,
-                onMovementChange: _controller.setMovement,
-                onResetFontSize: _controller.resetFontSize,
-                onResetTextColor: _controller.resetTextColor,
-                onResetBgColor: _controller.resetBgColor,
-                onResetMovement: _controller.resetMovement,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 0, vertical:8),
+                child: HomeSettings(
+                  onTextColorChanged: (c) {
+                    if (c != null) _controller.setTextColor(c);
+                  },
+                  onBgColorChanged: (c) {
+                    if (c != null) _controller.setBgColor(c);
+                  },
+                  onFontSizeChange: _controller.adjustFontSize,
+                  onAutoFontSize: _controller.autoFontSize,
+                  onMovementChange: _controller.setMovement,
+                  onResetFontSize: _controller.resetFontSize,
+                  onResetTextColor: _controller.resetTextColor,
+                  onResetBgColor: _controller.resetBgColor,
+                  onResetMovement: _controller.resetMovement,
+                ),
               ),
             ),
           ],
