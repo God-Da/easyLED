@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'setting_fontSize.dart';
+import 'package:easyLED/app_config.dart';
 
 class HomeController extends ChangeNotifier {
   String _inputText = '';
@@ -42,7 +43,8 @@ class HomeController extends ChangeNotifier {
   /// 폰트 크기 조절 - 동작 방식 완전 분리!
   void adjustFontSize(bool increase) {
     const styleBase = TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w900);
-    final double W = 1600, H = 900;
+    final double W = AppConfig.previewWidth;
+    final double H = AppConfig.previewHeight;
     final minSize = FontSizeController.minFontSize;
     final maxSize = FontSizeController.maxFontSize;
     final words = _inputText.trim().split(RegExp(r'\s+'));

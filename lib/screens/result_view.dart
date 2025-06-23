@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
+import 'package:easyLED/app_config.dart';
 
 class ResultView extends StatelessWidget {
   final String text;
@@ -19,59 +20,64 @@ class ResultView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
-    final double resultViewWidth = size.width;
-    final double resultViewHeight = size.height;
-
     return Scaffold(
       backgroundColor: bgColor,
       body: SafeArea(
         child: Stack(
           children: [
-            // 1) 90도 회전된 전광판 텍스트
+            // 회전된 전광판
             Center(
               child: RotatedBox(
                 quarterTurns: 1, // 90도 시계 방향 회전
                 child: movement == "흐르기"
                     ? SizedBox(
-                  width: resultViewHeight,  // ★ 회전 후 가로
-                  height: fontSize * 1.3,   // ★ 한 줄만 (글자 크게 보여주려면 그대로!)
+                  width: AppConfig.previewHeight,
+                  height: fontSize * 1.3,
                   child: Marquee(
-                    text: text.isEmpty ? '여기에 텍스트를 입력하세요' : text,
+                    text: text.isEmpty
+                        ? AppConfig.defaultDisplayText
+                        : text,
                     style: TextStyle(
-                      fontFamily: 'Pretendard',
+                      fontFamily: AppConfig.fontFamily,
                       fontSize: fontSize,
                       fontWeight: FontWeight.w900,
                       color: textColor,
-                      height: 1.0,
+                      height: AppConfig.marqueeLineHeight,
                     ),
-                    blankSpace: 100,
-                    velocity: 30.0,
+                    blankSpace: AppConfig.marqueeBlankSpace,
+                    velocity: AppConfig.moveVelocity,
                     textDirection: TextDirection.ltr,
                   ),
                 )
-                    : FittedBox(
-                  fit: BoxFit.contain,
-                  child: Text(
-                    text.isEmpty ? '여기에 텍스트를 입력하세요' : text,
-                    style: TextStyle(
-                      fontFamily: 'Pretendard',
-                      fontSize: fontSize,
-                      fontWeight: FontWeight.w900,
-                      color: textColor,
-                      height: 1.0,
+                    : SizedBox(
+                  width: AppConfig.previewWidth,
+                  height: AppConfig.previewHeight,
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                      text.isEmpty
+                          ? AppConfig.defaultDisplayText
+                          : text,
+                      style: TextStyle(
+                        fontFamily: AppConfig.fontFamily,
+                        fontSize: fontSize,
+                        fontWeight: FontWeight.w900,
+                        color: textColor,
+                        height: 1.0,
+                      ),
+                      textAlign: TextAlign.center,
+                      softWrap: true,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
             ),
-            // 2) “뒤로 가기” 버튼
+            // 뒤로가기 버튼
             Positioned(
               top: 10,
               left: 10,
               child: IconButton(
-                icon: const Icon(Icons.arrow_back, size: 24, color: Colors.white),
+                icon: const Icon(Icons.arrow_back, size: AppConfig.iconSize, color: Colors.white),
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
                 onPressed: () => Navigator.pop(context),
