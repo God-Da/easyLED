@@ -87,11 +87,10 @@ Figma 활용 | 만족도 85% 이상 |
 ### 문서
 
 요구사항 정의서
-
 [https://docs.google.com/spreadsheets/d/1Ar-0GsI7lJM6DXvI5PgI7N9medSx9Hek5-M4PJlqNLE/edit?usp=sharing](https://docs.google.com/spreadsheets/d/1Ar-0GsI7lJM6DXvI5PgI7N9medSx9Hek5-M4PJlqNLE/edit?usp=sharing)
 
 UI/UX 디자인 및 프로토타입
+https://www.figma.com/design/KFRHOpmcwKe2jdZVIOvsCe/%EC%89%AC%EC%9A%B4LED?node-id=0-1&t=Qfemf3w6xM3kQ3hR-1
 
 GitHub 레파지토리
-
 [https://github.com/God-Da/easyLED](https://github.com/God-Da/easyLED)
